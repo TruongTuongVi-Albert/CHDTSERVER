@@ -1,0 +1,193 @@
+.banner-phone {
+    display: flex;
+    justify-content: space-between; 
+    text-align: center;
+    align-items: center; 
+    width: 800px;
+    height: 200px;
+    margin: 0 auto;
+}
+
+.phone-content {
+    width: 1300px;
+    margin: 0 auto;
+}
+
+.select-logo {
+    display: flex;
+    gap: 20px;
+    text-align: center;
+}
+
+.select-logo div {
+    border: 1px solid gray;
+    border-radius: 10px;
+    width: 100px;
+    height: 35px;
+    line-height: 35px;
+    padding-bottom: 10px;
+}
+
+
+.samsunglogo, 
+.nokialogo,
+.asuslogo,
+.vivologo,
+.gglogo,
+.sonylogo {
+    width: 50px;
+    height: 50px;
+}
+
+.applelogo {
+    width: 30px;
+    height: 30px;
+    margin-top: 5px;
+}
+
+.select-price-phone{
+    display: flex;
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+.select-price-phone div {
+    border: 1px solid #03045E;
+    border-radius: 10px;
+    width: 200px;
+}
+
+.select-price-phone img {
+    width: 40px;
+    height: 40px;
+    margin-left: 10px;
+}
+
+.select-price-phone a {
+    text-decoration: none;
+    color: #03045E;
+    font-weight: bold;
+}
+
+.select-price-phone a:hover {
+    text-decoration:underline;
+}
+
+.item-phone-center {
+    margin-bottom: 30px;
+}
+
+.phone-center {
+    display: flex;
+    width: 100%;
+    margin-bottom: 20px;
+    margin-top: -30px;
+}
+
+.phone-center .item-phone {
+    border: 1px solid #03045E;
+    border-radius: 20px;
+    background-color: white;
+    margin-left: 20px;
+    width: 300px;
+}
+.phone-sale {
+    background-color: #C31313;
+    width: 80px;
+    height: 30px;
+    line-height: 30px;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 0 20px 20px 0;
+    text-align: right;
+    font-size: 18px;
+    margin-top: 20px;
+    padding-right: 10px;
+}
+
+.ip {
+    width: 200px;
+    height: 200px;
+    margin-left: 40px;
+}
+
+.phone-title-name {
+    font-size: 19px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.5;
+    width: 100%;
+}
+
+.phone-money-big {
+    text-align: center;
+    color: #C31313;
+    font-weight: bold;
+    font-size: 22px;
+    margin-bottom: 7px;
+}
+
+.phone-money-lit {
+    text-align: center;
+    font-size: 17px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-decoration: line-through;
+}
+
+.phone-intro {
+    width: 270px;
+    margin-left: 10px;
+    margin-right: 5px;
+    margin-bottom: 10px;
+    border: 0.5px solid darkblue;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.phone-item-bottom {
+    display: flex;
+    margin-left: 20px;
+    width: 100%;
+}
+
+.phone-item-bottom .rating {
+    width: 120;
+    height: 20px;
+    margin-top: 20px;
+}
+
+.phone-item-bottom p {
+    margin-left: 60px;
+    margin-right: 10px;
+}
+
+.phone-item-bottom .like {
+    width: 20px;
+    height: 20px;
+    margin-top: 20px;
+}
+
+.phone-bottom {
+    text-align: center;
+    border: 1px solid #03045E;
+    border-radius: 5px;
+    background-color: white;
+    width: 130px;
+    height: 35px;
+    line-height: 35px;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 auto;
+}
+
+.phone-bottom a {
+    text-decoration: none;
+    color: #03045E;
+}
+
+.phone-bottom a:hover {
+    text-decoration: underline #9FD7F9;
+    color: #0c79de;
+}
