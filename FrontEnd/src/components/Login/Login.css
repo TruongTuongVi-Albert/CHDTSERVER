@@ -1,0 +1,118 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-height: 1400px;
+    margin: 0;
+    
+}
+
+.imageLogin{
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.wrapper {
+    background: gainsboro;
+    color:darkblue;
+    width: 450px;
+    border-radius: 10px;
+    padding: 30px 40px;
+}
+.wrapper h1 {
+    font-size: 35px;
+    text-align: center;
+    color: darkblue;
+}
+
+.wrapper .input-box{
+    position: relative;
+    width: 100%;
+    height: 40px;
+    color: darkblue;
+    margin: 40px 0;
+}
+.input-box input{
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    outline: none;
+    border: 2px solid darkgrey;
+    border-radius:10px;
+    font-size: 16px;
+    color: darkblue;
+    padding: 20px 40px 20px 15px;
+}
+.input-box input::placeholder{
+    color: gray;
+}
+
+.input-box .text{
+    padding: 5px;
+}
+
+.wrapper .show-password{
+    height: 50px;
+    width: 270px;
+    font-size: 14px;
+}
+
+
+
+.show-password label input{
+    accent-color: #fff;
+    margin-right: 5px;
+    margin-top: 2px;
+}
+.remember-forgot a:hover{
+    text-decoration: underline;
+}
+
+.wrapper button{
+    width: 100%;
+    height: 45px;
+    background-color: rgb(5, 5, 162);
+    border: none;
+    outline: none;
+    border-radius: 10px;
+    box-shadow: 0 0 10px darkgray;
+    cursor: pointer;
+    font-size: 16px;
+    color: #fff;
+    font-weight: 700;
+}
+
+.wrapper .register-link{
+    font-size: 13px;
+    text-align: center;
+    margin: 20px 0 15px;
+}
+
+.register-link p a{
+    color: red;
+    text-decoration: none;
+    font-weight: 600px;
+}
+
+.register-link p a:hover{
+    text-decoration: underline;
+}
+
+
+
+
+
+
+
+
+
+
+
+
