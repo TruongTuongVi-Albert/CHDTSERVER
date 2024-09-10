@@ -48,7 +48,7 @@ class Catalog(BaseModel):
 class Product(BaseModel):
     product_name = models.CharField(max_length=100)
     brand = models.CharField(max_length=100, null=True, blank=True)
-    image = CloudinaryField(null=True, blank=True)
+    image = models.CharField(max_length=255, null=True, blank=True)
     specifications = models.TextField(null=True, blank=True)
     catalog = models.ForeignKey(Catalog, on_delete=models.SET_NULL, null=True, blank=True)
 

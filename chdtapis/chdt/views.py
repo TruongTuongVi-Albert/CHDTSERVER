@@ -1,7 +1,4 @@
-from itertools import product
-
 from rest_framework import viewsets, generics, status, permissions
-from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from . import serializers
@@ -35,18 +32,11 @@ class ProductViewSet(viewsets.ModelViewSet, generics.ListAPIView, generics.Creat
             if q:
                 queryset = queryset.filter(name__icontains=q)
 
+            pro_name = self.request.query_params.get('product_product_name')
+            if pro_name:
+                queryset = queryset.filter(product_name=pro_name)
+
         return queryset
-
-    @action(methods=['get'], url_path='details', detail=True)
-    def get_details(self, request, pk):
-        detail = self.get_object().details_set.filter(active=True)
-
-        q = request.query_params.get('q')
-        if q:
-            details = detail.filter(subject__icontains=q)
-
-        return Response(serializers.LessonSerializer(details, many=True).data,
-                        status=status.HTTP_200_OK)
 
 
 class DetailViewSet(viewsets.ModelViewSet, generics.ListAPIView, generics.CreateAPIView, generics.UpdateAPIView):
@@ -77,6 +67,7 @@ class OrderItemViewSet(viewsets.ModelViewSet, generics.ListAPIView, generics.Cre
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, *args, **kwargs):
+
         # Logic để cập nhật số lượng sản phẩm
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
@@ -110,3 +101,4 @@ class OrderItemViewSet(viewsets.ModelViewSet, generics.ListAPIView, generics.Cre
 class ReviewViewSet(viewsets.ModelViewSet, generics.ListAPIView, generics.CreateAPIView):
     queryset = Review.objects.filter(active=True)
     serializer_class = serializers.ReviewSerializer
+

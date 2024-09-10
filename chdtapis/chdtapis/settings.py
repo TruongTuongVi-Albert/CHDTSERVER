@@ -17,6 +17,7 @@ from cloudinary.templatetags import cloudinary
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -26,14 +27,13 @@ SECRET_KEY = 'django-insecure-$5yj3oy&6zew+i4ka4uq-4z&pax!njhsg4)_!*e+d@=^tq$jge
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost',
-                 '127.0.0.1',
-                 'localhost:3000', ]
+ALLOWED_HOSTS = []
 
 from pathlib import Path
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
+
 
 # Application definition
 
@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'rest_framework',
     'oauth2_provider',
-    'corsheaders',
+    # 'corsheaders',
 ]
 
 CKEDITOR_UPLOAD_PATH = "ckeditor/images/"
@@ -62,12 +62,12 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'chdt.User'
 
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # React app running locally
-    "https://yourdomain.com",  # Your production domain
-]
+# CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",  # React app running locally
+#     "https://yourdomain.com",  # Your production domain
+# ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -77,8 +77,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
+    # 'corsheaders.middleware.CorsMiddleware',
+    # 'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'chdtapis.urls'
@@ -101,6 +101,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'chdtapis.wsgi.application'
 
+
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -113,6 +114,7 @@ DATABASES = {
         'HOST': ''  # mặc định localhost
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -132,6 +134,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -143,6 +146,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
@@ -152,6 +156,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
 
 import pymysql
 
@@ -164,5 +170,5 @@ cloudinary.config(
 )
 
 # Mã tạo Token, để lấy dữ liệu user đăng nhập.
-CLIENT_ID = 'EykXf6AAwtcU0p1rkO1CdELiJ0IOwDl13teJWMzW'
-CLIENT_SECRET = '91iVADCWuvYkFD1R6O64FIiD1t7b9cnlRezuiC0nVfiQTKuiV1eHVy0E4Nqsmu57BUZVDWK3ryheLSU7p5hDPxN5ZefnBOgbSMjmfdhl9YFxZg0q6F87NMnmjXALAt9p'
+CLIENT_ID = 'oGLNLBEWtc83DpBZlgRgbMO9ppU7oE5e8jeidLgF'
+CLIENT_SECRET = 'vfU5PD1T7mdiBniGnuRbRZ0htbVVPvlmutwMNkendvh811Bq8zTTJWxiWRoftP5G7y3j7Cn9qpjBVbSrtMIC90mUP5Ux2rF1GRAiuZonGJUIEI2vpUNYQi6cIMKMLDaE'
