@@ -20,6 +20,7 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
         if self.action.__eq__('list'):
             q = self.request.query_params.get('q')
             if q:
+<<<<<<< Updated upstream
                 queryset = queryset.filter(name__icontains=q)
 
             user_id = self.request.query_params.get('user_id')
@@ -43,6 +44,9 @@ class CategoryViewSet(viewsets.ViewSet, generics.ListAPIView):
             cate_code = self.request.query_params.get('category_code')
             if cate_code:
                 queryset = queryset.filter(category_code=cate_code)
+=======
+                queryset = queryset.filter(product_name__icontains=q)
+>>>>>>> Stashed changes
 
         return queryset
 
@@ -109,11 +113,21 @@ class OrderViewSet(viewsets.ViewSet, generics.ListAPIView):
 
         order.save()
 
+<<<<<<< Updated upstream
         return Response(OrderSerializer(order).data, status=status.HTTP_201_CREATED)
 
     # Nhận giỏ hàng từ request của client, tạo một đơn hàng mới và thêm các sản phẩm vào đơn hàng.
     def create(self, request):
         cart = request.data.get('cart', {})
+=======
+    def update(self, request, *args, **kwargs):
+        # Logic để cập nhật số lượng sản phẩm
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+>>>>>>> Stashed changes
 
         if not cart:
             return Response({"error": "Giỏ hàng không có sản phẩm."}, status=status.HTTP_400_BAD_REQUEST)
@@ -193,8 +207,11 @@ class OrderProductViewSet(viewsets.ViewSet, generics.ListAPIView):
 class ReviewViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = Review.objects.all()
     serializer_class = serializers.ReviewSerializer
+<<<<<<< Updated upstream
     permission_classes = [permissions.IsAuthenticated]  # Chỉ cho phép người dùng đã xác thực
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)  # Gán người dùng hiện tại vào đánh giá
 
+=======
+>>>>>>> Stashed changes
