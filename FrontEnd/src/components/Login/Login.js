@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Login.css";
 import imageLogin from "../Pic/imageLogin.png";
-import APIs, { endpoints } from "../../configs/APIs";
+import APIs, { endpoints } from "../../Configs/APIs";
 
 
 const Login = () => {
@@ -13,10 +13,10 @@ const Login = () => {
         e.preventDefault();
         try {
             const res = await APIs.post(endpoints['login'], {
-                'username': username,
-                'password': password,
-                client_id: 'uVvz38F3o3g877wq6dNfQ7cfTK8jfsdwXtHZUUMA',
-                client_secret: 'N9by1xLlw7CUO5pc7kBxuQYefJwee2VNO9L397LJmxygCnNTjuWghCumviUn8G7mwn6DNkldvibmJ44EcB6Ad2oYxcvSJmTMCbuVM9gmmhZrAsQvsEQGgWHOO2iZtavP',
+                username,
+                password,
+                client_id: 'oGLNLBEWtc83DpBZlgRgbMO9ppU7oE5e8jeidLgF',
+                client_secret: 'vfU5PD1T7mdiBniGnuRbRZ0htbVVPvlmutwMNkendvh811Bq8zTTJWxiWRoftP5G7y3j7Cn9qpjBVbSrtMIC90mUP5Ux2rF1GRAiuZonGJUIEI2vpUNYQi6cIMKMLDaE',
                 grant_type: 'password'
             });
             console.log(res);
