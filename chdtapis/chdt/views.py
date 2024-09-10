@@ -1,55 +1,28 @@
-# Views là hiện lên trang admin
-from rest_framework import viewsets, generics, permissions
-from rest_framework.decorators import action
+from rest_framework import viewsets, generics, status, permissions
 from rest_framework.response import Response
-from django.conf import settings
-from rest_framework.views import APIView
-from rest_framework import status
 
 from . import serializers
-from .models import User, Category, Product, Order, OrderProduct, Review
+from .models import User, Catalog, Product, Detail, Address, Order, OrderItem, Review
 
 
-class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
-    queryset = User.objects.filter(is_active=True) # is: là đang hoạt động
+class UserViewSet(viewsets.ModelViewSet, generics.ListAPIView, generics.CreateAPIView, generics.UpdateAPIView):
+    queryset = User.objects.filter(is_active=True)
     serializer_class = serializers.UserSerializer
 
-    def get_queryset(self):
-        queryset = self.queryset
 
-        if self.action.__eq__('list'):
-            q = self.request.query_params.get('q')
-            if q:
-                queryset = queryset.filter(name__icontains=q)
-
-            user_id = self.request.query_params.get('user_id')
-            if user_id:
-                queryset = queryset.filter(user_id=user_id)
-
-        return queryset
-
-class CategoryViewSet(viewsets.ViewSet, generics.ListAPIView):
-    queryset = Category.objects.filter(active=True)
-    serializer_class = serializers.CategorySerializer
-
-    def get_queryset(self):
-        queryset = self.queryset
-
-        if self.action.__eq__('list'):
-            q = self.request.query_params.get('q')
-            if q:
-                queryset = queryset.filter(name__icontains=q)
-
-            cate_code = self.request.query_params.get('category_code')
-            if cate_code:
-                queryset = queryset.filter(category_code=cate_code)
-
-        return queryset
+class AddressViewSet(viewsets.ModelViewSet, generics.ListAPIView, generics.CreateAPIView, generics.UpdateAPIView):
+    queryset = Address.objects.filter(active=True)
+    serializer_class = serializers.AddressSerializer
 
 
-class ProductViewSet(viewsets.ViewSet, generics.ListAPIView):
+class CatalogViewSet(viewsets.ModelViewSet, generics.ListAPIView, generics.CreateAPIView, generics.UpdateAPIView):
+    queryset = Catalog.objects.filter(active=True)
+    serializer_class = serializers.CatalogSerializer
+
+
+class ProductViewSet(viewsets.ModelViewSet, generics.ListAPIView, generics.CreateAPIView, generics.UpdateAPIView):
     queryset = Product.objects.filter(active=True)
-    serializer_class = serializers.ProductsSerializer
+    serializer_class = serializers.ProductSerializer
 
     def get_queryset(self):
         queryset = self.queryset
@@ -59,142 +32,73 @@ class ProductViewSet(viewsets.ViewSet, generics.ListAPIView):
             if q:
                 queryset = queryset.filter(name__icontains=q)
 
-            pro_code = self.request.query_params.get('product_code')
-            if pro_code:
-                queryset = queryset.filter(product_code=pro_code)
+            pro_name = self.request.query_params.get('product_product_name')
+            if pro_name:
+                queryset = queryset.filter(product_name=pro_name)
 
         return queryset
 
 
-class OrderViewSet(viewsets.ViewSet, generics.ListAPIView):
+class DetailViewSet(viewsets.ModelViewSet, generics.ListAPIView, generics.CreateAPIView, generics.UpdateAPIView):
+    queryset = Detail.objects.filter(active=True)
+    serializer_class = serializers.DetailSerializer
+
+
+class OrderViewSet(viewsets.ModelViewSet, generics.ListAPIView, generics.CreateAPIView, generics.UpdateAPIView):
     queryset = Order.objects.filter(active=True)
     serializer_class = serializers.OrderSerializer
 
-    def get_queryset(self):
-        queryset = self.queryset
 
-        if self.action.__eq__('list'):
-            q = self.request.query_params.get('q')
-            if q:
-                queryset = queryset.filter(name__icontains=q)
+class OrderItemViewSet(viewsets.ModelViewSet, generics.ListAPIView, generics.CreateAPIView, generics.UpdateAPIView):
+    queryset = OrderItem.objects.filter(active=True)
+    serializer_class = serializers.OrderItemSerializer
 
-            odr_code = self.request.query_params.get('order_code')
-            if odr_code:
-                queryset = queryset.filter(order_code=odr_code)
+    def create(self, request, *args, **kwargs):
+        # Logic để thêm sản phẩm vào giỏ hàng
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
 
-        return queryset
-
-    def create(self, request):
-        cart = request.data.get('cart', {})  # Giả định rằng giỏ hàng được gửi dưới dạng JSON
-
-        if not cart:
-            return Response({"error": "Giỏ hàng không có sản phẩm."}, status=status.HTTP_400_BAD_REQUEST)
-
-        order = Order.objects.create(code='ORDER_CODE', total_price=0, total_quantity=0)
-
-        for product_code, item in cart.items():
-            try:
-                product = Product.objects.get(code=product_code)
-            except Product.DoesNotExist:
-                return Response({"error": f"Sản phẩm {product_code} không tồn tại."}, status=status.HTTP_404_NOT_FOUND)
-
-            quantity = item.get('quantity', 1)
-            order_product, created = OrderProduct.objects.get_or_create(order=order, product=product)
-            order_product.quantity += quantity
-            order_product.save()
-
-            # Cập nhật tổng số lượng và giá
-            order.total_quantity += quantity
-            order.total_price += product.price * quantity
-
+        # Tính toán lại tổng tiền và cập nhật vào đơn hàng
+        order = serializer.instance.order
+        order.total_price = self.calculate_total_price(order)
         order.save()
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-        return Response(OrderSerializer(order).data, status=status.HTTP_201_CREATED)
+    def update(self, request, *args, **kwargs):
 
-    # Nhận giỏ hàng từ request của client, tạo một đơn hàng mới và thêm các sản phẩm vào đơn hàng.
-    def create(self, request):
-        cart = request.data.get('cart', {})
+        # Logic để cập nhật số lượng sản phẩm
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
 
-        if not cart:
-            return Response({"error": "Giỏ hàng không có sản phẩm."}, status=status.HTTP_400_BAD_REQUEST)
-
-        order_code = "ORDER_CODE"  # Có thể tạo mã đơn hàng ngẫu nhiên hoặc theo logic của bạn
-        order = Order.objects.create(code=order_code)
-
-        total_price = 0
-        total_quantity = 0
-
-        for product_code, item in cart.items():
-            try:
-                product = Product.objects.get(code=product_code)
-            except Product.DoesNotExist:
-                return Response({"error": f"Sản phẩm {product_code} không tồn tại."}, status=status.HTTP_404_NOT_FOUND)
-
-            quantity = item.get('quantity', 1)
-            order_product, created = OrderProduct.objects.get_or_create(order_code=order, product_code=product)
-            order_product.quantity += quantity
-            order_product.save()
-
-            # Cập nhật tổng số lượng và giá
-            total_quantity += quantity
-            total_price += product.price * quantity
-
-        # Cập nhật thông tin tổng của đơn hàng
-        order.total_quantity = total_quantity
-        order.total_price = total_price
+        # Tính toán lại tổng tiền và cập nhật vào đơn hàng
+        order = serializer.instance.order
+        order.total_price = self.calculate_total_price(order)
         order.save()
-
-        return Response(OrderSerializer(order).data, status=status.HTTP_201_CREATED)
-
-    # Trả về danh sách tất cả các đơn hàng.
-    def list(self, request):
-        orders = Order.objects.all()
-        serializer = OrderSerializer(orders, many=True)
         return Response(serializer.data)
 
-    # Nhận mã đơn hàng (pk) và trả về thông tin chi tiết của đơn hàng đó
-    def retrieve(self, request, pk=None):
-        try:
-            order = Order.objects.get(pk=pk)
-            serializer = OrderSerializer(order)
-            return Response(serializer.data)
-        except Order.DoesNotExist:
-            return Response({"error": "Đơn hàng không tồn tại."}, status=status.HTTP_404_NOT_FOUND)
+    def destroy(self, request, *args, **kwargs):
+        # Logic để xóa sản phẩm khỏi giỏ hàng
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        # Tính toán lại tổng tiền và cập nhật vào đơn hàng
+        order = instance.order
+        order.total_price = self.calculate_total_price(order)
+        order.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
-    # Xóa đơn hàng theo mã đơn hàng (pk).
-    def destroy(self, request, pk=None):
-        try:
-            order = Order.objects.get(pk=pk)
-            order.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except Order.DoesNotExist:
-            return Response({"error": "Đơn hàng không tồn tại."}, status=status.HTTP_404_NOT_FOUND)
+    def calculate_total_price(self, order):
+        # Logic để tính tổng tiền của đơn hàng
+        order_items = OrderItem.objects.filter(order=order)
+        total_price = sum(item.quantity * item.product.price for item in order_items)
+        return total_price
 
 
-class OrderProductViewSet(viewsets.ViewSet, generics.ListAPIView):
-    queryset = OrderProduct.objects.filter(active=True)
-    serializer_class = serializers.OrderProductSerializer
-
-    def get_queryset(self):
-        queryset = self.queryset
-
-        if self.action.__eq__('list'):
-            q = self.request.query_params.get('q')
-            if q:
-                queryset = queryset.filter(name__icontains=q)
-
-            opr_code = self.request.query_params.get('order_product_code')
-            if opr_code:
-                queryset = queryset.filter(order_product_code=opr_code)
-
-        return queryset
-
-
-class ReviewViewSet(viewsets.ViewSet, generics.ListAPIView):
-    queryset = Review.objects.all()
+class ReviewViewSet(viewsets.ModelViewSet, generics.ListAPIView, generics.CreateAPIView):
+    queryset = Review.objects.filter(active=True)
     serializer_class = serializers.ReviewSerializer
-    permission_classes = [permissions.IsAuthenticated]  # Chỉ cho phép người dùng đã xác thực
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)  # Gán người dùng hiện tại vào đánh giá
 

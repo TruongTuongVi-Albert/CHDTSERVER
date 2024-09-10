@@ -27,11 +27,7 @@ SECRET_KEY = 'django-insecure-$5yj3oy&6zew+i4ka4uq-4z&pax!njhsg4)_!*e+d@=^tq$jge
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    'localhost:3000',
-]
+ALLOWED_HOSTS = []
 
 from pathlib import Path
 import cloudinary
@@ -53,7 +49,7 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'rest_framework',
     'oauth2_provider',
-    'corsheaders',
+    # 'corsheaders',
 ]
 
 CKEDITOR_UPLOAD_PATH = "ckeditor/images/"
@@ -66,12 +62,12 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'chdt.User'
 
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # React app running locally
-    "https://yourdomain.com",  # Your production domain
-]
+# CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",  # React app running locally
+#     "https://yourdomain.com",  # Your production domain
+# ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -81,8 +77,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
+    # 'corsheaders.middleware.CorsMiddleware',
+    # 'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'chdtapis.urls'
@@ -114,7 +110,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'chdtdatabase',
         'USER': 'root',
-        'PASSWORD': 'admin@123',
+        'PASSWORD': 'Admin@123',
         'HOST': ''  # mặc định localhost
     }
 }
