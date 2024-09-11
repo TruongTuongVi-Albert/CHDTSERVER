@@ -1,241 +1,111 @@
-import "./Index.css";
-import rightarrow from "../Pic/right-arrow.png";
-import leftarrow from "../Pic/left-arrow.png";
-import banner1 from "../Pic/img-banner2.png";
-import airpoods from "../Video/airpoods.mp4";
-import fire from "../Pic/fire.png";
-import iphone from "../Pic/ip15prm.webp";
-import rating from "../Pic/rating.png";
-import like from "../Pic/like.png";
-import picsuggest from "../Pic/img-suggest.png";
-import longarrow from "../Pic/long-arrow.png";
-
-
+import { useEffect, useState } from 'react';
+import '../Style/Style.css';
+import APIs, { endpoints } from '../../configs/APIs';
+import { Link, useNavigate } from 'react-router-dom';
+import Cart from '../Cart/Cart';
 
 const Index = () => {
+    const [catalogs, setCatalogs] = useState([]);
+    const [details, setDetails] = useState([]);
+    const [products, setProducts] = useState({}); // Store products by ID
+    const [selectedCatalog, setSelectedCatalog] = useState(null); // Track selected catalog
+    const [cart, setCart] = useState([]); // State for cart items
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchCatalogs = async () => {
+            try {
+                const res = await APIs.get(endpoints['catalogs']);
+                setCatalogs(res.data);
+            } catch (error) {
+                console.error('Error fetching catalogs:', error);
+            }
+        };
+
+        const fetchDetails = async () => {
+            try {
+                const res = await APIs.get(endpoints['details']);
+                setDetails(res.data);
+                fetchProducts(res.data.map(detail => detail.product)); // Fetch products using IDs
+            } catch (error) {
+                console.error('Error fetching details:', error);
+            }
+        };
+
+        const fetchProducts = async (productIds) => {
+            try {
+                const res = await APIs.get(`${endpoints['products']}?ids=${productIds.join(',')}`);
+                const productsData = {};
+                res.data.forEach(product => {
+                    productsData[product.id] = product; // Store products by ID
+                });
+                setProducts(productsData);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
+        };
+
+        fetchCatalogs();
+        fetchDetails();
+    }, []);
+
+    // Filter products based on selected catalog
+    const filteredDetails = selectedCatalog
+        ? details.filter(detail => {
+            const product = products[detail.product];
+            return product && product.catalog === selectedCatalog; // Check if product catalog matches selected catalog
+        })
+        : details;
+
+    const addToCart = (product) => {
+        setCart([...cart, product]); // Add product to cart
+    };
+
     return (
-        <div className="main-content">
-            <div className="video">
-                <video controls autoplay muted loop>
-                    <source src={airpoods} type="video/mp4" />
-                    Your browser does not support the video tag.
-                </video>
+        <div className="content-center">
+            <div className="catalogs">
+                <div className="catalog-list">
+                    <div className="catalog-item" onClick={() => setSelectedCatalog(null)}>All</div>
+                    {catalogs.map((catalog) => (
+                        <div
+                            key={catalog.id}
+                            className="catalog-item"
+                            onClick={() => setSelectedCatalog(catalog.id)} // Set selected catalog
+                        >
+                            {catalog.catalog_name}
+                        </div>
+                    ))}
+                    <div className="catalog-item"><Link to='/cart'>Cart</Link></div>
+                </div>
             </div>
 
-            <div className="content-banner">
-                <img src={leftarrow} className="arrow" />
-
-                <div className="img-banner">
-                    <img src={banner1} className="banner1" />
-                </div>
-                <div className="img-banner">
-                    <img src={banner1} className="banner1" />
-                </div>
-
-                <img src={rightarrow} className="arrow" />
-            </div>
-
-            <div className="content-center">
-                <div className="hotSale">
-                    <div className="hotSale-top">
-                        <img src={fire} className="fire" />
-                        <p className="title-hotSale">FLASH SALE </p>
-                        <div className="time">
-                            <p className="title-time">Finished in: </p>
-                            <div className="number-time">
-                                <div><p>02</p></div>
-                                <p className="p">:</p>
-                                <div><p>02</p></div>
-                                <p className="p">:</p>
-                                <div><p>02</p></div>
-                            </div>
-                        </div>
+            <h2 className="product-title">Sản phẩm nổi bật</h2>
+            <div className="product-grid">
+                {filteredDetails.map((detail) => (
+                    <div key={detail.id} className="product-item" onClick={() => navigate(`/products/${detail.product}`)}>
+                        {products[detail.product] ? (
+                            <>
+                                <img
+                                    src={products[detail.product].image}
+                                    alt={products[detail.product].product_name}
+                                    className="product-image"
+                                />
+                                <h3 className="product-name">{products[detail.product].product_name}</h3>
+                                <p className="product-price">Giá: {detail.price ? detail.price : 'Không có giá'}</p>
+                                <div className="promotion">Trả góp 0%</div>
+                                <button className="favorite-button">Yêu thích</button>
+                                <button
+                                    className="favorite-button"
+                                    onClick={() => addToCart(products[detail.product])}
+                                >
+                                    Thêm vào giỏ hàng
+                                </button>
+                            </>
+                        ) : (
+                            <p>Không có thông tin sản phẩm</p>
+                        )}
                     </div>
-                    <div className="hotSale-center">
-                        <div className="item">
-                            <div className="item-sale">-50%</div>
-                            <img src={iphone} className="ip" />
-                            <p className="item-name">Samsung Galaxy S24 Plus 12GB 256 GB</p>
-                            <p className="item-money-big">21.990.000đ</p>
-                            <p className="item-money-lit">26.990.000đ</p>
-                            <div className="item-intro">
-                                <p>Không phí chuyển đổi khi trả góp 0% qua thẻ tín dụng từ 3-6-9-12 tháng...</p>
-                            </div>
-                            <div className="item-bottom">
-                                <img src={rating} className="rating" />
-                                <p>Yêu thích</p>
-                                <img src={like} className="like" />
-                            </div>
-                        </div>
-                        <div className="item">
-                            <div className="item-sale">-50%</div>
-                            <img src={iphone} className="ip" />
-                            <p className="item-name">Samsung Galaxy S24 Plus 12GB 256 GB</p>
-                            <p className="item-money-big">21.990.000đ</p>
-                            <p className="item-money-lit">26.990.000đ</p>
-                            <div className="item-intro">
-                                <p>Không phí chuyển đổi khi trả góp 0% qua thẻ tín dụng từ 3-6-9-12 tháng...</p>
-                            </div>
-                            <div className="item-bottom">
-                                <img src={rating} className="rating" />
-                                <p>Yêu thích</p>
-                                <img src={like} className="like" />
-                            </div>
-                        </div>
-                        <div className="item">
-                            <div className="item-sale">-50%</div>
-                            <img src={iphone} className="ip" />
-                            <p className="item-name">Samsung Galaxy S24 Plus 12GB 256 GB</p>
-                            <p className="item-money-big">21.990.000đ</p>
-                            <p className="item-money-lit">26.990.000đ</p>
-                            <div className="item-intro">
-                                <p>Không phí chuyển đổi khi trả góp 0% qua thẻ tín dụng từ 3-6-9-12 tháng...</p>
-                            </div>
-                            <div className="item-bottom">
-                                <img src={rating} className="rating" />
-                                <p>Yêu thích</p>
-                                <img src={like} className="like" />
-                            </div>
-                        </div>
-                        <div className="item">
-                            <div className="item-sale">-50%</div>
-                            <img src={iphone} className="ip" />
-                            <p className="item-name">Samsung Galaxy S24 Plus 12GB 256 GB</p>
-                            <p className="item-money-big">21.990.000đ</p>
-                            <p className="item-money-lit">26.990.000đ</p>
-                            <div className="item-intro">
-                                <p>Không phí chuyển đổi khi trả góp 0% qua thẻ tín dụng từ 3-6-9-12 tháng...</p>
-                            </div>
-                            <div className="item-bottom">
-                                <img src={rating} className="rating" />
-                                <p>Yêu thích</p>
-                                <img src={like} className="like" />
-                            </div>
-                        </div>  
-                    </div>
-                    <div className="hotSale-bottom">
-                        <a href="#">View all</a>
-                    </div>
-                </div>
-
-                <div className="bestSellers-title">
-                    <div className="line1"></div>
-                    <p>Best Sellers</p>
-                    <div className="line2"></div>
-                </div>
-
-                <div className="select-bestSellers">
-                    <div>
-                        Apple
-                    </div>
-                    <div>
-                        Samsung
-                    </div>
-                    <div>
-                        Oppo
-                    </div>
-                    <div>
-                        Xiaomi
-                    </div>
-                    <div>
-                        View all...
-                    </div>
-                </div>
-
-                <div className="item-bestSellers">
-                    <div className="best-center">
-                        <div className="item-best">
-                            <div className="item-best-sale">0%</div>
-                            <img src={iphone} className="ip"/>
-                            <p className="best-title-name">Samsung Galaxy S24 Plus 12GB 256 GB</p>
-                            <p className="best-money-big">21.990.000đ</p>
-                            <p className="best-money-lit">26.990.000đ</p>
-                            <div className="best-intro">
-                                <p>Không phí chuyển đổi khi trả góp 0% qua thẻ tín dụng từ 3-6-9-12 tháng...</p>
-                            </div>
-                            <div className="best-item-bottom">
-                                <img src={rating}  className="rating"/>
-                                <p>Yêu thích</p>
-                                <img src={like} className="like" />
-                            </div>  
-                        </div>
-                        <div className="item-best">
-                            <div className="item-best-sale">0%</div>
-                            <img src={iphone} className="ip"/>
-                            <p className="best-title-name">Samsung Galaxy S24 Plus 12GB 256 GB</p>
-                            <p className="best-money-big">21.990.000đ</p>
-                            <p className="best-money-lit">26.990.000đ</p>
-                            <div className="best-intro">
-                                <p>Không phí chuyển đổi khi trả góp 0% qua thẻ tín dụng từ 3-6-9-12 tháng...</p>
-                            </div>
-                            <div className="best-item-bottom">
-                                <img src={rating}  className="rating"/>
-                                <p>Yêu thích</p>
-                                <img src={like} className="like" />
-                            </div>  
-                        </div>
-                        <div className="item-best">
-                            <div className="item-best-sale">0%</div>
-                            <img src={iphone} className="ip"/>
-                            <p className="best-title-name">Samsung Galaxy S24 Plus 12GB 256 GB</p>
-                            <p className="best-money-big">21.990.000đ</p>
-                            <p className="best-money-lit">26.990.000đ</p>
-                            <div className="best-intro">
-                                <p>Không phí chuyển đổi khi trả góp 0% qua thẻ tín dụng từ 3-6-9-12 tháng...</p>
-                            </div>
-                            <div className="best-item-bottom">
-                                <img src={rating}  className="rating"/>
-                                <p>Yêu thích</p>
-                                <img src={like} className="like" />
-                            </div>  
-                        </div>
-                        <div className="item-best">
-                            <div className="item-best-sale">0%</div>
-                            <img src={iphone} className="ip"/>
-                            <p className="best-title-name">Samsung Galaxy S24 Plus 12GB 256 GB</p>
-                            <p className="best-money-big">21.990.000đ</p>
-                            <p className="best-money-lit">26.990.000đ</p>
-                            <div className="best-intro">
-                                <p>Không phí chuyển đổi khi trả góp 0% qua thẻ tín dụng từ 3-6-9-12 tháng...</p>
-                            </div>
-                            <div className="best-item-bottom">
-                                <img src={rating}  className="rating"/>
-                                <p>Yêu thích</p>
-                                <img src={like} className="like" />
-                            </div>  
-                        </div>
-    
-                    </div>
-                    <div className="best-bottom">
-                        <a href="#">View all</a>
-                    </div>
-                </div>
-
-                <div className="suggest-title">
-                    <div className="line1"></div>
-                    <p>Suggest</p>
-                    <div className="line2"></div>
-                </div>
-
-                <div className="item-suggest">
-                    <div className="suggest-infor">
-                        <div className="suggest-sale">SALE</div>
-                        <p className="suggest-title">AirPords Max</p>
-                        <p className="suggest-intro">Sounds like an epiphany</p>
-                        <p className="suggest-little">Minimalist, sophisticated design but still extremely luxurious and classy.</p>
-                        <div className="suggest-money">
-                            <div className="suggest-money-lit">$549</div>
-                            <img src={longarrow} className="One-arrow"/>
-                            <div className="suggest-money-big">$499</div>
-                        </div>
-                        <button type="submit">Buy</button>
-                    </div>
-                    <div className="suggest-img">
-                        <img src={picsuggest} className="img-suggest"/>
-                    </div>
-                </div>
-
-                
+                ))}
             </div>
         </div>
     );

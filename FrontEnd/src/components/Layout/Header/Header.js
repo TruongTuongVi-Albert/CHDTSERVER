@@ -11,6 +11,7 @@ import laptop from "../../Pic/laptop.png";
 import sound from "../../Pic/bluetooth-headset.png";
 import accessory from "../../Pic/charger.png";
 import news from "../../Pic/news.png";
+import { Link } from "react-router-dom";
 
 
 const Header = () => (
@@ -39,57 +40,20 @@ const Header = () => (
                     </a>
                 </div>
                 <div className="nav">
-                    <a href="#" className="Cart-link">
-                        <img src={cart} alt="Cart" className="img" />
-                        <p className="title-Cart">Cart</p>
-                    </a>
+
+                    <Link to="/cart" className="Cart-link">
+                            <img src={cart} alt="Cart" className="img" />
+                            <p className="title-Cart">Cart</p>
+                    </Link>
                 </div>
                 <div className="nav">
-                    <a href="#" className="User-link">
-                        <img src={user} alt="User" className="img" />
+                    <Link to="/login" className="User-link">
+                        <div><img src={user} alt="User" className="img" /></div>
                         <p className="title-User">Login</p>
-                    </a>
+                    </Link>
                 </div>
             </div>
         </div>
-
-        <div className="header-products">
-                <div className="nav-products">
-                    <a href="#" >
-                        <img src={phone} alt="phone" className="img-phone"/>
-                        <p className="title-phone">Phone</p>
-                    </a>
-                </div>
-
-                <div className="nav-products">
-                    <a href="#" >
-                        <img src={laptop} alt="Laptop" className="img-laptope"/>
-                        <p className="title-laptop">Laptop</p>
-                    </a>
-                </div>
-
-
-                <div className="nav-products">
-                    <a href="#" >
-                        <img src={sound} alt="earphone" className="img-earphone"/>
-                        <p className="title-earphone">Earphone</p>
-                    </a>
-                </div>
-                
-                <div className="nav-products">
-                    <a href="#" >
-                        <img src={tablet} alt="Tablet" className="img-tablet"/>
-                        <p className="title-tablet">Tablet</p>
-                    </a>
-                </div>
-
-                <div className="nav-products">
-                    <a href="#" >
-                        <img src={news} alt="News" className="img-news"/>
-                        <p className="title-news">News</p>
-                    </a>
-                </div>
-            </div>
     </div>
 );
 export default Header;
