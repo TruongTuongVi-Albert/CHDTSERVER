@@ -17,7 +17,6 @@ from cloudinary.templatetags import cloudinary
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -27,13 +26,15 @@ SECRET_KEY = 'django-insecure-$5yj3oy&6zew+i4ka4uq-4z&pax!njhsg4)_!*e+d@=^tq$jge
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+
+ALLOWED_HOSTS = ['localhost',
+                 '127.0.0.1',
+                 'localhost:3000', ]
 
 from pathlib import Path
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
-
 
 # Application definition
 
@@ -101,7 +102,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'chdtapis.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -114,7 +114,6 @@ DATABASES = {
         'HOST': ''  # mặc định localhost
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -134,7 +133,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -146,7 +144,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
@@ -156,8 +153,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
 
 import pymysql
 
@@ -170,5 +165,5 @@ cloudinary.config(
 )
 
 # Mã tạo Token, để lấy dữ liệu user đăng nhập.
-CLIENT_ID = 'oGLNLBEWtc83DpBZlgRgbMO9ppU7oE5e8jeidLgF'
-CLIENT_SECRET = 'vfU5PD1T7mdiBniGnuRbRZ0htbVVPvlmutwMNkendvh811Bq8zTTJWxiWRoftP5G7y3j7Cn9qpjBVbSrtMIC90mUP5Ux2rF1GRAiuZonGJUIEI2vpUNYQi6cIMKMLDaE'
+CLIENT_ID = 'uVvz38F3o3g877wq6dNfQ7cfTK8jfsdwXtHZUUMA'
+CLIENT_SECRET = 'N9by1xLlw7CUO5pc7kBxuQYefJwee2VNO9L397LJmxygCnNTjuWghCumviUn8G7mwn6DNkldvibmJ44EcB6Ad2oYxcvSJmTMCbuVM9gmmhZrAsQvsEQGgWHOO2iZtavP'

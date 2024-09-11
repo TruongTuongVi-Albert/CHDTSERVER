@@ -66,8 +66,11 @@ class OrderItemViewSet(viewsets.ModelViewSet, generics.ListAPIView, generics.Cre
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+    # Nhận giỏ hàng từ request của client, tạo một đơn hàng mới và thêm các sản phẩm vào đơn hàng.
+    def create(self, request):
+        cart = request.data.get('cart', {})
+        
     def update(self, request, *args, **kwargs):
-
         # Logic để cập nhật số lượng sản phẩm
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
@@ -101,4 +104,3 @@ class OrderItemViewSet(viewsets.ModelViewSet, generics.ListAPIView, generics.Cre
 class ReviewViewSet(viewsets.ModelViewSet, generics.ListAPIView, generics.CreateAPIView):
     queryset = Review.objects.filter(active=True)
     serializer_class = serializers.ReviewSerializer
-
