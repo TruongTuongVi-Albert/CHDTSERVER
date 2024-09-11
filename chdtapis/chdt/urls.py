@@ -5,6 +5,8 @@ from django.urls import include
 from rest_framework import routers
 
 from . import views, admin
+from .dao import order_stats
+
 
 r = routers.DefaultRouter()
 
@@ -18,5 +20,6 @@ r.register('addresses', views.AddressViewSet, 'addresses')
 r.register('reviews', views.ReviewViewSet, 'reviews')
 
 urlpatterns = [
-    path('', include(r.urls))
+    path('', include(r.urls)),
+    path('stats/', views.order_stats, name='order_stats'),
 ]
