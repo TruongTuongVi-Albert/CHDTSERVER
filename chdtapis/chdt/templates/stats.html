@@ -1,0 +1,49 @@
+{% extends 'admin/base_site.html' %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Statistics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Order Statistics by Year</h1>
+    <canvas id="orderChart" width="400" height="200"></canvas>
+
+    <script>
+        var ctx = document.getElementById('orderChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'bar', // Set chart type as bar chart
+            data: {
+                labels: {{ years|safe }}, // Use safe filter to prevent XSS
+                datasets: [{
+                    label: 'Total Orders',
+                    data: {{ total_orders|safe }},
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Total Revenue',
+                    data: {{ total_revenue|safe }},
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+
+{% endblock %}
