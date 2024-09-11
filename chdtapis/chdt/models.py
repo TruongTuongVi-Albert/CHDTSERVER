@@ -1,3 +1,5 @@
+
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from cloudinary.models import CloudinaryField
 
@@ -6,23 +8,21 @@ from cloudinary.models import CloudinaryField
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    active = models.BooleanField(default=True)
 
     class Meta:
         abstract = True
 
 
 # User model (v2_user table)
-class User(models.Model):
+class User(AbstractUser):
     email = models.EmailField(max_length=255, unique=True)
-    username = models.CharField(max_length=100)
-    password = models.CharField(max_length=255)
     balance_mem = models.IntegerField(null=True, blank=True)
     discount = models.IntegerField(null=True, blank=True)
     is_admin = models.BooleanField(default=False)
     last_login_at = models.DateTimeField(null=True, blank=True)
-    avatar_url = models.URLField(max_length=255, null=True, blank=True)
+    avatar = CloudinaryField('image', null=True)
     membership = models.CharField(max_length=50, null=True, blank=True)
-    gender = models.CharField(max_length=10, null=True, blank=True)
     birthday = models.DateField(null=True, blank=True)
     phone_number = models.CharField(max_length=20, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -53,7 +53,7 @@ class Product(BaseModel):
 
 
 # Detail model (v2_details table)
-class Detail(models.Model):
+class Detail(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     storage = models.CharField(max_length=50, null=True, blank=True)
     price = models.IntegerField(null=True, blank=True)
@@ -122,7 +122,7 @@ class Order(BaseModel):
 
 
 # OrderItems model (v2_order_items table)
-class OrderItem(models.Model):
+class OrderItem(BaseModel):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField()
