@@ -26,7 +26,6 @@ SECRET_KEY = 'django-insecure-$5yj3oy&6zew+i4ka4uq-4z&pax!njhsg4)_!*e+d@=^tq$jge
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-
 ALLOWED_HOSTS = ['localhost',
                  '127.0.0.1',
                  'localhost:3000', ]
@@ -50,7 +49,7 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'rest_framework',
     'oauth2_provider',
-    # 'corsheaders',
+    'corsheaders',
 ]
 
 CKEDITOR_UPLOAD_PATH = "ckeditor/images/"
@@ -63,12 +62,12 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'chdt.User'
 
-# CORS_ALLOW_CREDENTIALS = True
-# CORS_ALLOW_ALL_ORIGINS = True
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",  # React app running locally
-#     "https://yourdomain.com",  # Your production domain
-# ]
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # React app running locally
+    "https://yourdomain.com",  # Your production domain
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -78,8 +77,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'corsheaders.middleware.CorsMiddleware',
-    # 'django.middleware.common.CommonMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'chdtapis.urls'
@@ -159,11 +158,11 @@ import pymysql
 pymysql.install_as_MySQLdb()
 
 cloudinary.config(
-    cloud_name="dywyrpfw7",
-    api_key="347843143129496",
-    api_secret="5w5TM-1zXcIeGAm2uHzpAv7Eqwc"
+    cloud_name="dchyeg7pv",
+    api_key="145841362381475",
+    api_secret="tUjF9x1spiyvWYK3ITsa7Ic4BwA"
 )
 
 # Mã tạo Token, để lấy dữ liệu user đăng nhập.
-CLIENT_ID = 'uVvz38F3o3g877wq6dNfQ7cfTK8jfsdwXtHZUUMA'
-CLIENT_SECRET = 'N9by1xLlw7CUO5pc7kBxuQYefJwee2VNO9L397LJmxygCnNTjuWghCumviUn8G7mwn6DNkldvibmJ44EcB6Ad2oYxcvSJmTMCbuVM9gmmhZrAsQvsEQGgWHOO2iZtavP'
+CLIENT_ID = 'EykXf6AAwtcU0p1rkO1CdELiJ0IOwDl13teJWMzW'
+CLIENT_SECRET = '91iVADCWuvYkFD1R6O64FIiD1t7b9cnlRezuiC0nVfiQTKuiV1eHVy0E4Nqsmu57BUZVDWK3ryheLSU7p5hDPxN5ZefnBOgbSMjmfdhl9YFxZg0q6F87NMnmjXALAt9p'

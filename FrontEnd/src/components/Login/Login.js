@@ -1,60 +1,93 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "./Login.css";
 import imageLogin from "../Pic/imageLogin.png";
 import APIs, { endpoints } from "../../configs/APIs";
 
-
 const Login = () => {
+    const navigate = useNavigate(); // Khởi tạo useNavigate
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
+    const [showPassword, setShowPassword] = useState(false);
 
-    const handleSubmit = async (e) => { // Xử lý thông tin
+    const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const res = await APIs.post(endpoints['login'], {
-                'username': username,
-                'password': password,
-                client_id: 'uVvz38F3o3g877wq6dNfQ7cfTK8jfsdwXtHZUUMA',
-                client_secret: 'N9by1xLlw7CUO5pc7kBxuQYefJwee2VNO9L397LJmxygCnNTjuWghCumviUn8G7mwn6DNkldvibmJ44EcB6Ad2oYxcvSJmTMCbuVM9gmmhZrAsQvsEQGgWHOO2iZtavP',
+                username,
+                password,
+                client_id: 'EykXf6AAwtcU0p1rkO1CdELiJ0IOwDl13teJWMzW',
+                client_secret: '91iVADCWuvYkFD1R6O64FIiD1t7b9cnlRezuiC0nVfiQTKuiV1eHVy0E4Nqsmu57BUZVDWK3ryheLSU7p5hDPxN5ZefnBOgbSMjmfdhl9YFxZg0q6F87NMnmjXALAt9p',
                 grant_type: 'password'
+            }, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             });
-            console.log(res);
+
+            // Lưu access_token vào localStorage
+            localStorage.setItem('access_token', res.data.access_token);
+
+            // Lấy thông tin người dùng
+            const userInfo = await APIs.get(endpoints['current-users'], {
+                headers: {
+                    Authorization: `Bearer ${res.data.access_token}`
+                }
+            });
+
+            console.log(userInfo.data); // Xử lý thông tin người dùng ở đây
+
+            // Chuyển hướng về trang Index
+            navigate('/'); // Thay đổi đường dẫn nếu cần
         } catch (err) {
             console.log(err);
             setError('Login failed. Please check your credentials.');
         }
     };
 
-
-
-
     return (
-        <div className="contriner" onSubmit={handleSubmit}>
-
-            <img src={imageLogin} alt="imageLogin" className="imageLogin" />
+        <div className="container">
+            <img src={imageLogin} alt="Login" className="imageLogin" />
             <div className="wrapper">
-                <form action="">
+                <form onSubmit={handleSubmit}>
                     <h1>Login</h1>
                     <div className="input-box">
                         <div className="text">Username</div>
-                        <input type="text" placeholder="Enter Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+                        <input 
+                            type="text" 
+                            placeholder="Enter Username" 
+                            value={username} 
+                            onChange={(e) => setUsername(e.target.value)} 
+                            required 
+                        />
                     </div>
                     <div className="input-box">
                         <div className="text">Password</div>
-                        <input type="password" placeholder="Enter Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                        <input 
+                            type={showPassword ? "text" : "password"} 
+                            placeholder="Enter Password" 
+                            value={password} 
+                            onChange={(e) => setPassword(e.target.value)} 
+                            required 
+                        />
                     </div>
 
                     <div className="show-password">
-                        <input type="checkbox" /><label>Show Password</label>
+                        <input 
+                            type="checkbox" 
+                            checked={showPassword} 
+                            onChange={() => setShowPassword(!showPassword)} 
+                        />
+                        <label>Show Password</label>
                     </div>
 
                     <button type="submit">Login</button>
 
                     <div className="register-link">
-                        <p> Don't have an account? <a href="#">Register</a></p>
+                        <p>Don't have an account? <a href="#">Register</a></p>
                     </div>
-                    {error && <p>{error}</p>}
+                    {error && <p className="error">{error}</p>}
                 </form>
             </div>
         </div>

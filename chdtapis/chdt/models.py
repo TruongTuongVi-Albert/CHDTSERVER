@@ -1,4 +1,3 @@
-
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from cloudinary.models import CloudinaryField
@@ -21,8 +20,13 @@ class User(AbstractUser):
     discount = models.IntegerField(null=True, blank=True)
     is_admin = models.BooleanField(default=False)
     last_login_at = models.DateTimeField(null=True, blank=True)
-    avatar = CloudinaryField('image', null=True)
-    membership = models.CharField(max_length=50, null=True, blank=True)
+    avatar = CloudinaryField(null=True)
+    gender = models.CharField(max_length=10, choices=[
+        ('male', 'Nam'),
+        ('female', 'Nữ'),
+        ('other', 'Khác'),
+        ('secret', 'Bí Mật')
+    ], default='male')
     birthday = models.DateField(null=True, blank=True)
     phone_number = models.CharField(max_length=20, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -44,7 +48,7 @@ class Catalog(BaseModel):
 class Product(BaseModel):
     product_name = models.CharField(max_length=100)
     brand = models.CharField(max_length=100, null=True, blank=True)
-    image = models.CharField(max_length=255, null=True, blank=True)
+    image = CloudinaryField(null=True)
     specifications = models.TextField(null=True, blank=True)
     catalog = models.ForeignKey(Catalog, on_delete=models.SET_NULL, null=True, blank=True)
 
@@ -58,7 +62,7 @@ class Detail(BaseModel):
     storage = models.CharField(max_length=50, null=True, blank=True)
     price = models.IntegerField(null=True, blank=True)
     color = models.CharField(max_length=50, null=True, blank=True)
-    image = models.CharField(max_length=255, null=True, blank=True)
+    image = CloudinaryField(null=True, blank=True)
     installment = models.BooleanField(null=True, blank=True)
     trade_in_sale = models.IntegerField(null=True, blank=True)
 

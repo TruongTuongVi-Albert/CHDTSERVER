@@ -1,30 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, Avatar, Typography, Button, Divider, Input, DatePicker, Select } from 'antd';
 import { HomeOutlined, IdcardOutlined, LogoutOutlined, EditOutlined, SaveOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import APIs, { endpoints } from '../../configs/APIs'; // Đảm bảo bạn đã cấu hình API đúng
 import './Profile.css';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
 
-// Dữ liệu mẫu
-const sampleUser = {
-  profilePic: 'https://img.freepik.com/free-photo/handsome-man-smiling-happy-face-portrait-close-up_53876-145493.jpg',
-  name: 'Nguyễn Văn A',
-  fullName: 'Nguyễn Văn A',
-  email: 'nguyenvana@example.com',
-  gender: 'Nam',
-  phoneNumber: '0123456789',
-  dateOfBirth: '01/01/1990',
-  tvtBiddingDate: '15/05/2023',
-  address: '123 Đường ABC, Quận XYZ, TP. Hồ Chí Minh',
-  todayAccumulatedAmount: '1,000,000 VND'
-};
-
-const Profile = ({ initialUser = sampleUser }) => {
+const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [user, setUser] = useState(initialUser);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem('access_token');
+        const response = await APIs.get(endpoints['current-user'], {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setUser(response.data); // Lưu thông tin người dùng vào state
+      } catch (error) {
+        console.error('Failed to fetch user data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -42,11 +47,13 @@ const Profile = ({ initialUser = sampleUser }) => {
     }));
   };
 
+  if (!user) return <div>Loading...</div>; // Hiển thị loading nếu dữ liệu chưa được tải
+
   return (
     <div className="profile-container">
       <Card className="profile-card">
         <div className="profile-header">
-          <Avatar size={120} src={user.profilePic} />
+          <Avatar size={120} src={user.avatar} /> {/* Giả sử avatar được trả về trong user */}
           <Title level={2}>{user.name}</Title>
         </div>
         
@@ -85,23 +92,12 @@ const Profile = ({ initialUser = sampleUser }) => {
             inputType="date"
           />
           <InfoItem 
-            label="Ngày đấu thầu TVT" 
-            value={user.tvtBiddingDate} 
-            isEditing={isEditing}
-            onChange={(value) => handleChange('tvtBiddingDate', value)}
-            inputType="date"
-          />
-          <InfoItem 
             label="Địa chỉ" 
             value={user.address} 
             isEditing={isEditing}
             onChange={(value) => handleChange('address', value)}
           />
-          <InfoItem 
-            label="Số tiền tích lũy hôm nay" 
-            value={user.todayAccumulatedAmount} 
-            isEditing={false} // Luôn set false để không cho phép chỉnh sửa
-          />
+          {/* Thêm các trường khác nếu cần */}
         </div>
         
         <Button 

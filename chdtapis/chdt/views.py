@@ -1,4 +1,7 @@
+from itertools import product
+
 from rest_framework import viewsets, generics, status, permissions
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from . import serializers
@@ -8,6 +11,22 @@ from .models import User, Catalog, Product, Detail, Address, Order, OrderItem, R
 class UserViewSet(viewsets.ModelViewSet, generics.ListAPIView, generics.CreateAPIView, generics.UpdateAPIView):
     queryset = User.objects.filter(is_active=True)
     serializer_class = serializers.UserSerializer
+
+    def get_permissions(self):
+        if self.action in ['get_current_user']:
+            return [permissions.IsAuthenticated()]
+
+        return [permissions.AllowAny()]
+
+    @action(methods=['get', 'patch'], url_path='current-user', detail=False)
+    def get_current_user(self, request):
+        user = request.user
+        if request.method.__eq__('PATCH'):
+            for k, v in request.data.items():
+                setattr(user, k, v)
+            user.save()
+
+        return Response(serializers.UserSerializer(user).data)
 
 
 class AddressViewSet(viewsets.ModelViewSet, generics.ListAPIView, generics.CreateAPIView, generics.UpdateAPIView):
@@ -31,10 +50,6 @@ class ProductViewSet(viewsets.ModelViewSet, generics.ListAPIView, generics.Creat
             q = self.request.query_params.get('q')
             if q:
                 queryset = queryset.filter(name__icontains=q)
-
-            pro_name = self.request.query_params.get('product_product_name')
-            if pro_name:
-                queryset = queryset.filter(product_name=pro_name)
 
         return queryset
 
@@ -66,10 +81,6 @@ class OrderItemViewSet(viewsets.ModelViewSet, generics.ListAPIView, generics.Cre
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-    # Nhận giỏ hàng từ request của client, tạo một đơn hàng mới và thêm các sản phẩm vào đơn hàng.
-    def create(self, request):
-        cart = request.data.get('cart', {})
-        
     def update(self, request, *args, **kwargs):
         # Logic để cập nhật số lượng sản phẩm
         partial = kwargs.pop('partial', False)
